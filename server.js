@@ -50,15 +50,16 @@ async function createBook (req, res) {
 }
 
 async function deleteBook (req, res) {
-  console.log(req.query);
   const id = req.params.id;
   const email = req.query.email;
   try {
-    let deleteBook = await book.find(req.params.id);
-    if (deleteBook.email === email) {
-      await book.deleteOne(req.params.id)
+    let deleteBook = await book.find({_id: req.params.id});
+    console.log(deleteBook[0].email);
+    console.log(email);
+    if (deleteBook[0].email === email) {
+      await book.deleteOne({_id: req.params.id}) 
+      res.status(204).send('Book deleted');
     }
-    res.status(204).send('Book deleted');
   } catch(e) {
     res.status(400).send('Book not deleted');
   }
@@ -73,6 +74,6 @@ app.get('/test', (request, response) => {
 app.get('/books', getBooks);
 
 app.post('/books', createBook);
-app.delete('/books', deleteBook);
+app.delete('/books/:id', deleteBook);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
