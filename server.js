@@ -52,11 +52,13 @@ async function createBook (req, res) {
 async function deleteBook (req, res) {
   const id = req.params.id;
   const email = req.query.email;
+  console.log(req.params.id)
   try {
     let deleteBook = await book.find({_id: req.params.id});
     console.log(deleteBook[0].email);
     console.log(email);
     if (deleteBook[0].email === email) {
+      console.log('gonna delete');
       await book.deleteOne({_id: req.params.id}) 
       res.status(204).send('Book deleted');
     }
