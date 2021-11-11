@@ -67,6 +67,19 @@ async function deleteBook (req, res) {
   }
 }
 
+async function updateBook (req, res) {
+  const id = req.params.id;
+  const email = req.query.email;
+  const bookData = req.body;
+  console.log(id, email, bookData);
+  try {
+    let updateBook = await book.findByIdAndUpdate(id, bookData, {new: true});
+    res.status(200).send(updateBook);
+  } catch (e) {
+    res.status(400).send('Book not updated');
+  }
+} 
+
 app.get('/test', (request, response) => {
 
   response.send('test request received')
@@ -74,8 +87,8 @@ app.get('/test', (request, response) => {
 })
 
 app.get('/books', getBooks);
-
 app.post('/books', createBook);
 app.delete('/books/:id', deleteBook);
+app.put('/books/:id', updateBook);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
