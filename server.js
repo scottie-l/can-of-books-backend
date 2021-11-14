@@ -5,6 +5,7 @@ const express = require('express');
 const cors = require('cors');
 const mongoose = require('mongoose');
 const book = require('./book.js');
+const verifyUser = require('./auth.js');
 // const getBooks = require('./bookRoute.js');
 
 const app = express();
@@ -19,6 +20,16 @@ db.once('open', function() {
 })
 
 const PORT = process.env.PORT || 3001;
+
+function getUser(request, response) {
+  verifyUser(request, (err, user) => {
+    if (err) {
+      response.send('invalid token');
+    } else {
+      response.send(user);
+    }
+  })
+} 
 
 async function getBooks(req, res) {
   let request = req.query;
@@ -81,14 +92,13 @@ async function updateBook (req, res) {
 } 
 
 app.get('/test', (request, response) => {
-
   response.send('test request received')
-
 })
 
 app.get('/books', getBooks);
 app.post('/books', createBook);
 app.delete('/books/:id', deleteBook);
 app.put('/books/:id', updateBook);
+app.get('/user', getUser);
 
 app.listen(PORT, () => console.log(`listening on ${PORT}`));
